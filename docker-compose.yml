@@ -1,0 +1,50 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: postgres_dev
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: UserCrud
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data_dev:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis_dev
+    ports:
+      - "6379:6379"
+
+  api:
+    build: 
+      context: ./UserCrud
+      dockerfile: Dockerfile
+    container_name: api_dev
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__PostgreSQL=Host=db;Port=5432;Database=UserDb;Username=postgres;Password=postgres
+      - RedisSettings__Url=redis:6379
+    ports:
+      - "5000:8080"
+    depends_on:
+      - db
+      - redis
+    
+
+  frontend:
+    build:
+      context: ./usercrud.client
+      dockerfile: Dockerfile.dev
+    container_name: frontend_dev
+    volumes:
+      - ./usercrud.client:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_API_URL=/api
+
+volumes:
+  postgres_data_dev:

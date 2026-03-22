@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/deploy/">
+    <File Path="docker-compose.prod.yml" />
+    <File Path="docker-compose.yml" />
+  </Folder>
+  <Project Path="UserCrud.client/usercrud.client.esproj">
+    <Build />
+    <Deploy />
+  </Project>
+  <Project Path="UserCrud/UserCrud.csproj" />
+</Solution>
