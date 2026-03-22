@@ -17,6 +17,8 @@ const HomePage = () => {
         <li>Деплой: GitHub Actions</li>
       </ul>
       <p>Надеюсь, вам понравится!</p>
+      <p>Тестирование пайплайна CI/CD кстати, да да</p>
+      <p>Мой tg-bot если что @makeevka_travel_bot</p>
     </div>
   );
 };

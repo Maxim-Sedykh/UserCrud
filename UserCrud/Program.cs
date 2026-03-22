@@ -65,6 +65,11 @@ namespace UserCrud
                 return Results.Ok("pong");
             });
 
+            app.MapGet("/cicd", () =>
+            {
+                return Results.Ok("correct");
+            });
+
             await app.ApplyDatabaseMigrationsAsync();
 
             app.MapControllers();
