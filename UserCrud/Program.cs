@@ -65,7 +65,7 @@ namespace UserCrud
                 return Results.Ok("pong");
             });
 
-            app.MapGet("/cicd", () =>
+            app.MapGet("/cicdt", () =>
             {
                 return Results.Ok("correct");
             });
