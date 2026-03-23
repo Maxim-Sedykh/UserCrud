@@ -20,6 +20,7 @@ const HomePage = () => {
       <p>Тестирование пайплайна CI/CD кстати, да да</p>
       <p>Мой tg-bot если что @makeevka_travel_bot</p>
       <p>One more test...</p>
+      <p>One more test... Finally</p>
     </div>
   );
 };
