@@ -23,6 +23,7 @@ const HomePage = () => {
       <p>One more test... Finally</p>
       <p>One more test... Finally CI/CD Welcome to K8S</p>
       <p>Мы в кубере ребята</p>
+      <p>Мы в кубере ребята пайплайн я в целом починил лол, реально последний тест((</p>
     </div>
   );
 };
