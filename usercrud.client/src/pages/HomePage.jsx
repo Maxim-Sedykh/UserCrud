@@ -21,6 +21,7 @@ const HomePage = () => {
       <p>Мой tg-bot если что @makeevka_travel_bot</p>
       <p>One more test...</p>
       <p>One more test... Finally</p>
+      <p>One more test... Finally CI/CD Welcome to K8S</p>
     </div>
   );
 };
