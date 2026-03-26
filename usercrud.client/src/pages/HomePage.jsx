@@ -22,6 +22,7 @@ const HomePage = () => {
       <p>One more test...</p>
       <p>One more test... Finally</p>
       <p>One more test... Finally CI/CD Welcome to K8S</p>
+      <p>Мы в кубере ребята</p>
     </div>
   );
 };
