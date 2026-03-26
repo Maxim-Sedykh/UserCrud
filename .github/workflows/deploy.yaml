@@ -2,7 +2,7 @@ name: Deploy to Production
 
 on:
   push:
-    branches: [ master ] # Сработает при пуше в ветку master
+    branches: [ master ]
 
 jobs:
   build-and-push:
@@ -20,7 +20,7 @@ jobs:
       - name: Build and push API
         uses: docker/build-push-action@v4
         with:
-          context: ./UserCrud # Путь к папке, где лежит Dockerfile бэкенда
+          context: ./UserCrud/UserCrud
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/usercrud-api:latest
 
@@ -36,21 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-and-push
     steps:
-      - name: Checkout code (for file transfer)
-        uses: actions/checkout@v3 # Этот шаг нужен, чтобы файлы проекта были доступны на раннере GitHub Actions
-
-      # ЭТО НОВОЕ ДЕЙСТВИЕ ИСПРАВЛЯЕТ ПРОБЛЕМУ С КОПИРОВАНИЕМ ФАЙЛОВ!
-      - name: Copy config files to server
-        uses: appleboy/scp-action@master # <--- ИСПОЛЬЗУЕМ SCP-ACTION ДЛЯ КОПИРОВАНИЯ
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          source: "docker-compose.prod.yml,nginx/prod.conf" # Какие файлы копировать (из корня репозитория)
-          target: "/usercrud/UserCrud" # Куда копировать на сервере
-
-      # Теперь используем SSH-ACTION только для выполнения команд
-      - name: Run deploy commands on server
+      - name: Deploy via SSH
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -58,10 +44,7 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             cd /usercrud/UserCrud
-            # Теперь rm -f не нужен, так как scp-action уже перезапишет файлы
-            docker compose -f docker-compose.prod.yml pull
-            docker compose -f docker-compose.prod.yml up -d --force-recreate frontend
-            docker image prune -f
-
-      - name: Complete job
-        run: echo "Job completed successfully."
+            git pull origin master
+            kubectl apply -f k8s/ --namespace usercrud
+            kubectl rollout restart deployment/api --namespace usercrud
+            kubectl rollout restart deployment/frontend --namespace usercrud

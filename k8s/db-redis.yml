@@ -1,0 +1,115 @@
+# --- POSTGRES ---
+
+# 1. Место на диске для базы данных
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+  namespace: usercrud
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: 1Gi
+---
+# 2. Запуск контейнера Postgres
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db
+  namespace: usercrud
+spec:
+  selector:
+    matchLabels:
+      app: db
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:16-alpine
+        env:
+        - name: POSTGRES_USER
+          value: "postgres"
+        - name: POSTGRES_PASSWORD
+          value: "postgres"
+        - name: POSTGRES_DB
+          value: "UserCrud"
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+        - name: db-storage
+          mountPath: /var/lib/postgresql/data
+      volumes:
+      - name: db-storage
+        persistentVolumeClaim:
+          claimName: postgres-pvc
+---
+# 3. Внутренний адрес для базы (будет доступен как "db:5432")
+apiVersion: v1
+kind: Service
+metadata:
+  name: db
+  namespace: usercrud
+spec:
+  ports:
+  - port: 5432
+  selector:
+    app: db
+
+---
+# --- REDIS ---
+
+# 4. Место на диске для Redis (чтобы кеш не пропадал при перезагрузке)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redis-pvc
+  namespace: usercrud
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: 500Mi
+---
+# 5. Запуск контейнера Redis
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  namespace: usercrud
+spec:
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:7-alpine
+        ports:
+        - containerPort: 6379
+        volumeMounts:
+        - name: redis-storage
+          mountPath: /data
+      volumes:
+      - name: redis-storage
+        persistentVolumeClaim:
+          claimName: redis-pvc
+---
+# 6. Внутренний адрес для Redis (будет доступен как "redis:6379")
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  namespace: usercrud
+spec:
+  ports:
+  - port: 6379
+  selector:
+    app: redis
