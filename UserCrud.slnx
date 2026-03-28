@@ -1,6 +1,13 @@
 <Solution>
   <Folder Name="/deploy/">
-    <File Path="docker-compose.prod.yml" />
+    <File Path="docker-compose.yml" />
+    <File Path="k8s/app.yml" />
+    <File Path="k8s/cluster-issuer.yml" />
+    <File Path="k8s/db-redis.yml" />
+    <File Path="k8s/ingress.yml" />
+    <File Path="storage.yml" />
+  </Folder>
+  <Folder Name="/deploy/docker-local/">
     <File Path="docker-compose.yml" />
   </Folder>
   <Project Path="UserCrud.client/usercrud.client.esproj">
