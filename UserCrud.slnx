@@ -1,6 +1,5 @@
 <Solution>
   <Folder Name="/deploy/">
-    <File Path="docker-compose.yml" />
     <File Path="k8s/app.yml" />
     <File Path="k8s/cluster-issuer.yml" />
     <File Path="k8s/db-redis.yml" />
